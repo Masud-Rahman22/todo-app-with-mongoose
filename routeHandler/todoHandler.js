@@ -6,18 +6,17 @@ const Todo = new mongoose.model('Todo', todoSchema)
 
 // all todos
 router.get('/', async (req, res) => {
-    await Todo.find({status: "active"})
-    .then((data)=>{
-        res.status(200).json({
-            result: data,
-            message: "all todos fetched successfully"
-        })
-    })
-    .catch((err)=>{
+    try {
+        const allTodos = await Todo.find()
+        if(!allTodos){
+            return res.status(404).json({message: 'No todos found'})
+        }
+        return res.status(200).json(allTodos)
+    } catch (error) {
         res.status(500).json({
-            error: 'server side error!'
-        })
-    })
+            error: "There was a server side error!"
+        });
+    }
 })
 
 // one particular todo
