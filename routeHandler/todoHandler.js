@@ -32,6 +32,17 @@ router.post('/', async(req,res)=>{
 
 // create more than one todo
 router.post('/all', async(req,res)=>{
+    await Todo.insertMany(req.body)
+    .then(() => {
+        res.status(200).json({
+            message: "Todos were inserted successfully"
+        });
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: "There was a server side error!"
+        });
+    });
 
 })
 
