@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 require('dotenv').config();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const todoHandler = require('./routeHandler/todoHandler')
 
 app.use(express.json());
