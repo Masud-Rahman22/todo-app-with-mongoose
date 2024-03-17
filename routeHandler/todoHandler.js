@@ -47,9 +47,34 @@ router.post('/all', async(req,res)=>{
 })
 
 // update a todo
-router.put('/:id', async(req,res)=>{
+router.put('/:id', async (req, res) => {
+    try {
+        const result = await Todo.findByIdAndUpdate({ _id: req.params.id }, {
+            $set: {
+                status: "inactive"
+            }
+        }, { new: true }); 
+        // new true is must otherwise updated object will not be fetched
 
-})
+        if (result) {
+            console.log(result);
+            res.status(200).json({
+                message: "Todo was updated successfully"
+            });
+        } else {
+            console.log("No document found with the specified ID");
+            res.status(404).json({
+                error: "Todo not found"
+            });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: "There was a server side error!"
+        });
+    }
+});
+
 
 // delete one todo
 router.delete('/:id', async(req,res)=>{
