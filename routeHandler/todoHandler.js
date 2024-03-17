@@ -8,6 +8,11 @@ const Todo = new mongoose.model('Todo', todoSchema)
 router.get('/', async (req, res) => {
     try {
         const allTodos = await Todo.find()
+        .select({
+            date: 0,
+        })
+        .limit(2)
+        // select method to select specific fields, limit method for specific todo
         if(!allTodos){
             return res.status(404).json({message: 'No todos found'})
         }
@@ -21,7 +26,18 @@ router.get('/', async (req, res) => {
 
 // one particular todo
 router.get('/:id', async (req, res) => {
-
+    try {
+        const allTodos = await Todo.find({_id: req.params.id})
+        // select method to select specific fields, limit method for specific todo
+        if(!allTodos){
+            return res.status(404).json({message: 'No todos found'})
+        }
+        return res.status(200).json(allTodos)
+    } catch (error) {
+        res.status(500).json({
+            error: "There was a server side error!"
+        });
+    }
 })
 
 // create one todo
@@ -86,7 +102,16 @@ router.put('/:id', async (req, res) => {
 
 // delete one todo
 router.delete('/:id', async (req, res) => {
-
+    try {
+        await Todo.deleteOne({_id: req.params.id})
+        return res.status(200).json({
+            message: 'todo deleted successfully'
+        })
+    } catch (error) {
+        res.status(500).json({
+            error: "There was a server side error!"
+        });
+    }
 })
 
 module.exports = router;
