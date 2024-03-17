@@ -25,7 +25,7 @@ router.post('/', async(req,res)=>{
         })
         .catch(err => {
             res.status(500).json({
-                error: "There was a server side error"
+                error: "There was a server side error!"
             });
         });
 })
