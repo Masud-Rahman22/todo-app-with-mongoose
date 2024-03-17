@@ -5,45 +5,54 @@ const router = express.Router();
 const Todo = new mongoose.model('Todo', todoSchema)
 
 // all todos
-router.get('/', async(req,res)=>{
-    
+router.get('/', async (req, res) => {
+    await Todo.find({status: "active"})
+    .then((data)=>{
+        res.status(200).json({
+            result: data,
+            message: "all todos fetched successfully"
+        })
+    })
+    .catch((err)=>{
+        res.status(500).json({
+            error: 'server side error!'
+        })
+    })
 })
 
 // one particular todo
-router.get('/:id', async(req,res)=>{
+router.get('/:id', async (req, res) => {
 
 })
 
 // create one todo
-router.post('/', async(req,res)=>{
+router.post('/', async (req, res) => {
     const newTodo = new Todo(req.body);
-    await newTodo.save()
-        .then(() => {
-            res.status(200).json({
-                message: "Todo was inserted successfully"
-            });
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: "There was a server side error!"
-            });
-        });
-})
-
-// create more than one todo
-router.post('/all', async(req,res)=>{
-    await Todo.insertMany(req.body)
-    .then(() => {
+    try {
+        await newTodo.save()
         res.status(200).json({
-            message: "Todos were inserted successfully"
+            message: "Todo was inserted successfully"
         });
-    })
-    .catch(err => {
+    } catch (error) {
         res.status(500).json({
             error: "There was a server side error!"
         });
-    });
+    }
+})
 
+// create more than one todo
+router.post('/all', async (req, res) => {
+    try {
+        await Todo.insertMany(req.body);
+        res.status(200).json({
+            message: "Todos were inserted successfully"
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: "There was a server side error!"
+        });
+    }
 })
 
 // update a todo
@@ -53,7 +62,7 @@ router.put('/:id', async (req, res) => {
             $set: {
                 status: "inactive"
             }
-        }, { new: true }); 
+        }, { new: true });
         // new true is must otherwise updated object will not be fetched
 
         if (result) {
@@ -77,7 +86,7 @@ router.put('/:id', async (req, res) => {
 
 
 // delete one todo
-router.delete('/:id', async(req,res)=>{
+router.delete('/:id', async (req, res) => {
 
 })
 
