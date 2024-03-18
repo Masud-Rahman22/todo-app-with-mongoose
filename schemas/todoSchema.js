@@ -28,4 +28,10 @@ todoSchema.statics = {
     }
 }
 
+todoSchema.query = {
+    findByLanguage: function(language) {
+        return this.find({title: new RegExp(language, "i")})
+    }
+}
+
 module.exports = todoSchema;
