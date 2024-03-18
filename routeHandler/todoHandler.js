@@ -8,13 +8,13 @@ const Todo = new mongoose.model('Todo', todoSchema)
 router.get('/', async (req, res) => {
     try {
         const allTodos = await Todo.find()
-        .select({
-            date: 0,
-        })
-        .limit(2)
+            .select({
+                date: 0,
+            })
+            .limit(2)
         // select method to select specific fields, limit method for specific todo
-        if(!allTodos){
-            return res.status(404).json({message: 'No todos found'})
+        if (!allTodos) {
+            return res.status(404).json({ message: 'No todos found' })
         }
         return res.status(200).json(allTodos)
     } catch (error) {
@@ -23,14 +23,33 @@ router.get('/', async (req, res) => {
         });
     }
 })
+// all active todos
+router.get('/active', async (req, res) => {
+    const todo = new Todo()
+    const data = await todo.findActive()
+    if(data){
+        res.status(200).json({
+            data: data,
+        })
+    }
+})
+// all js named todos
+router.get('/js', async (req, res) => {
+    const data = await Todo.findJs()
+    if(data){
+        res.status(200).json({
+            data: data,
+        })
+    }
+})
 
 // one particular todo
 router.get('/:id', async (req, res) => {
     try {
-        const allTodos = await Todo.find({_id: req.params.id})
+        const allTodos = await Todo.find({ _id: req.params.id })
         // select method to select specific fields, limit method for specific todo
-        if(!allTodos){
-            return res.status(404).json({message: 'No todos found'})
+        if (!allTodos) {
+            return res.status(404).json({ message: 'No todos found' })
         }
         return res.status(200).json(allTodos)
     } catch (error) {
@@ -103,7 +122,7 @@ router.put('/:id', async (req, res) => {
 // delete one todo
 router.delete('/:id', async (req, res) => {
     try {
-        await Todo.deleteOne({_id: req.params.id})
+        await Todo.deleteOne({ _id: req.params.id })
         return res.status(200).json({
             message: 'todo deleted successfully'
         })
